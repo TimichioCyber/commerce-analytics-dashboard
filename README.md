@@ -176,16 +176,10 @@ commerce-analytics-dashboard/
 |   |-- 06_validation_checks.sql
 |   |-- 07_dashboard_support_tables.sql
 |
-|-- screenshots/
-|   |-- executive_overview.png
-|   |-- funnel_analysis.png
-|   |-- retention_cohorts.png
-|   |-- revenue_segmentation.png
-|
 |-- README.md
 ```
 
-The Power BI `.pbix` file is kept locally and is not tracked in this public repository because the exported file is large. Dashboard screenshots will be added to the `screenshots/` folder.
+The Power BI `.pbix` file is kept locally and is not tracked in this public repository because the exported file is large.
 
 ---
 
