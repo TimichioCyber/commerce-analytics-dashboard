@@ -1,0 +1,20 @@
+# Local data exports
+data/
+*.csv
+*.xlsx
+*.parquet
+*.zip
+sql/_raw_input/
+
+# Power BI files are kept locally because exported .pbix files can be large.
+*.pbix
+
+# Power BI temporary files
+*.tmp
+*.bak
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
