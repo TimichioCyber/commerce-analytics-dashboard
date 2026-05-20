@@ -76,9 +76,9 @@ Main metrics:
 
 Key insight:
 
-Purchase users slightly exceeded cart users, which suggests either direct checkout behavior or incomplete cart event tracking.
+The cart step shows a tracking gap: almost all purchasing users had a prior product view, but many purchasing users did not have a recorded cart event.
 
-Cart -> Purchase conversion is calculated as users who had both cart and purchase events divided by users who had cart events.
+The final dashboard uses a sequential user-level funnel. In this approach, users must move through the observed order View -> Cart -> Purchase. This avoids mixing user-level and event-level conversion metrics.
 
 ### 3. Retention & Cohorts
 
@@ -93,6 +93,8 @@ Main analysis:
 Key insight:
 
 User retention drops sharply after Day 1 and then gradually stabilizes, which is typical for e-commerce behavior.
+
+Later cohorts have fewer observable days in the October dataset, so earlier and later cohorts should be compared with that limitation in mind.
 
 ### 4. Revenue & User Segmentation
 
@@ -109,6 +111,8 @@ Key insight:
 
 Most customers purchase only once, while a small group of repeat buyers generates significantly higher spending.
 
+Repeat buyers account for a disproportionately large share of revenue compared with their share of purchasing users.
+
 ---
 
 ## Key SQL Techniques Used
@@ -122,6 +126,7 @@ Most customers purchase only once, while a small group of repeat buyers generate
 * Revenue analysis
 * Data cleaning
 * BI-ready table creation
+* Data validation
 
 ---
 
@@ -130,9 +135,11 @@ Most customers purchase only once, while a small group of repeat buyers generate
 * Product views represent the majority of user activity.
 * Only around 11% of users who viewed products added products to cart.
 * Purchase conversion is slightly higher than cart conversion, which may indicate direct checkout behavior or missing cart tracking.
+* Sequential funnel analysis confirms that the cart step is the main tracking or behavioral gap.
 * Day-1 retention is relatively low, showing that many users do not return after their first visit.
 * Earlier cohorts showed stronger retention than later cohorts.
 * Smartphones were the strongest revenue-driving category.
+* `Unknown` was the second-highest revenue category and represented 9.97% of purchase revenue.
 * Most customers purchased only once.
 * Repeat buyers and high-value users contribute disproportionately to revenue.
 
@@ -157,6 +164,7 @@ commerce-analytics-dashboard/
 |
 |-- dashboard/
 |   |-- README.md
+|   |-- power_bi_editing_checklist.md
 |
 |-- sql/
 |   |-- 00_create_table.sql
@@ -166,6 +174,7 @@ commerce-analytics-dashboard/
 |   |-- 04_user_segmentation.sql
 |   |-- 05_data_quality_checks.sql
 |   |-- 06_validation_checks.sql
+|   |-- 07_dashboard_support_tables.sql
 |
 |-- screenshots/
 |   |-- executive_overview.png
@@ -186,7 +195,8 @@ The Power BI `.pbix` file is kept locally and is not tracked in this public repo
 2. Load the October 2019 e-commerce CSV dataset into PostgreSQL.
 3. Run the SQL scripts from the `sql/` folder in order.
 4. Open the local Power BI dashboard file.
-5. Review the dashboard pages and business insights.
+5. Refresh the Power BI model and use the dashboard support tables for the final visuals.
+6. Review the dashboard pages and business insights.
 
 ---
 
