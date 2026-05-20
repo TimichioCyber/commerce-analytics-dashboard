@@ -1,4 +1,4 @@
--- BI-ready support tables for the final Power BI dashboard version.
+-- BI-ready support tables for the Power BI dashboard.
 -- Run this script after sql/04_user_segmentation.sql.
 
 -- =====================================================

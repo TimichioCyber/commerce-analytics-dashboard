@@ -48,31 +48,15 @@ Main fields:
 
 ## Dashboard Pages
 
-### 1. Executive Overview
+### Executive Overview
 
-This page provides a high-level view of platform performance.
+High-level platform performance: revenue, users, purchase conversion, revenue trend, weekday revenue, and revenue by product category.
 
-Main metrics and visuals:
+### Funnel Analysis
 
-* Total Revenue
-* Total Users
-* Purchase Users
-* Purchase Conversion
-* Revenue Trend
-* Revenue by Weekday
-* Revenue by Product Category
-
-### 2. Funnel Analysis
-
-This page analyzes how users move through the purchase journey:
+User movement through the purchase journey:
 
 View -> Cart -> Purchase
-
-Main metrics:
-
-* View -> Cart conversion
-* Cart -> Purchase conversion
-* View -> Purchase conversion
 
 Key insight:
 
@@ -80,38 +64,15 @@ The cart step shows a tracking gap: almost all purchasing users had a prior prod
 
 The final dashboard uses a sequential user-level funnel. In this approach, users must move through the observed order View -> Cart -> Purchase. This avoids mixing user-level and event-level conversion metrics.
 
-### 3. Retention & Cohorts
+### Retention & Cohorts
 
-This page analyzes whether users return after their first visit.
-
-Main analysis:
-
-* Cohort retention table
-* Day-N retention
-* Retention heatmap
-
-Key insight:
-
-User retention drops sharply after Day 1 and then gradually stabilizes, which is typical for e-commerce behavior.
+Retention heatmap and Day-N cohort analysis.
 
 Later cohorts have fewer observable days in the October dataset, so earlier and later cohorts should be compared with that limitation in mind.
 
-### 4. Revenue & User Segmentation
+### Revenue & User Segmentation
 
-This page focuses on revenue concentration and customer value.
-
-Main analysis:
-
-* User purchase segmentation
-* Repeat buyers
-* High-value users
-* Top spending users
-
-Key insight:
-
-Most customers purchase only once, while a small group of repeat buyers generates significantly higher spending.
-
-Repeat buyers account for a disproportionately large share of revenue compared with their share of purchasing users.
+Purchase frequency segments, high-value users, and revenue share by buyer segment.
 
 ---
 
@@ -162,10 +123,6 @@ This is treated as a data quality limitation rather than a reason to exclude the
 ```text
 commerce-analytics-dashboard/
 |
-|-- dashboard/
-|   |-- README.md
-|   |-- power_bi_editing_checklist.md
-|
 |-- sql/
 |   |-- 00_create_table.sql
 |   |-- 01_data_overview.sql
@@ -173,8 +130,7 @@ commerce-analytics-dashboard/
 |   |-- 03_retention_analysis.sql
 |   |-- 04_user_segmentation.sql
 |   |-- 05_data_quality_checks.sql
-|   |-- 06_validation_checks.sql
-|   |-- 07_dashboard_support_tables.sql
+|   |-- 06_dashboard_support_tables.sql
 |
 |-- README.md
 ```
