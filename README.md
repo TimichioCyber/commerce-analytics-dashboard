@@ -140,7 +140,9 @@ Most customers purchase only once, while a small group of repeat buyers generate
 
 Some product category values were missing in the original dataset.
 
-Instead of removing these rows, missing categories were standardized as `Unknown` in Power BI. This approach keeps revenue totals consistent while making data quality limitations visible.
+Instead of removing these rows, missing categories were standardized as `Unknown` in both SQL and Power BI. This approach keeps revenue totals consistent while making data quality limitations visible.
+
+In the loaded October 2019 data, missing categories represented 173,425 purchase events and 22.9M in revenue, making `Unknown` the second-highest revenue category. Removing these rows would materially understate total revenue and change the category ranking.
 
 ---
 
@@ -158,6 +160,7 @@ commerce-analytics-dashboard/
 |   |-- 02_funnel_analysis.sql
 |   |-- 03_retention_analysis.sql
 |   |-- 04_user_segmentation.sql
+|   |-- 05_data_quality_checks.sql
 |
 |-- screenshots/
 |   |-- executive_overview.png

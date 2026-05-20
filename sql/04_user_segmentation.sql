@@ -39,13 +39,13 @@ LIMIT 20;
 
 -- Revenue by product category.
 SELECT
-    COALESCE(category_code, 'Unknown') AS category_code,
+    COALESCE(NULLIF(TRIM(category_code), ''), 'Unknown') AS category_code,
     COUNT(*) AS purchase_events,
     ROUND(SUM(price), 2) AS total_revenue,
     ROUND(AVG(price), 2) AS avg_purchase_value
 FROM ecommerce_events
 WHERE event_type = 'purchase'
-GROUP BY COALESCE(category_code, 'Unknown')
+GROUP BY COALESCE(NULLIF(TRIM(category_code), ''), 'Unknown')
 ORDER BY total_revenue DESC
 LIMIT 20;
 
