@@ -48,24 +48,44 @@ first_purchase_after_cart AS (
     WHERE e.event_type = 'purchase'
       AND e.event_time >= fc.first_cart_time
     GROUP BY e.user_id
+),
+purchase_cart_flags AS (
+    SELECT
+        user_id,
+        MAX(CASE WHEN event_type = 'cart' THEN 1 ELSE 0 END) AS has_cart,
+        MAX(CASE WHEN event_type = 'purchase' THEN 1 ELSE 0 END) AS has_purchase
+    FROM ecommerce_events
+    GROUP BY user_id
+),
+purchase_cart_summary AS (
+    SELECT
+        SUM(CASE WHEN has_purchase = 1 AND has_cart = 1 THEN 1 ELSE 0 END) AS purchase_users_with_recorded_cart,
+        SUM(CASE WHEN has_purchase = 1 AND has_cart = 0 THEN 1 ELSE 0 END) AS purchase_users_without_recorded_cart
+    FROM purchase_cart_flags
 )
 SELECT
     COUNT(fv.user_id) AS viewed_users,
     COUNT(fc.user_id) AS cart_after_view_users,
     COUNT(fpv.user_id) AS purchase_after_view_users,
     COUNT(fpc.user_id) AS strict_view_cart_purchase_users,
-    COUNT(fpv.user_id) - COUNT(fpc.user_id) AS purchase_after_view_without_cart_users,
+    COUNT(fpv.user_id) - COUNT(fpc.user_id) AS purchase_after_view_not_in_strict_funnel_users,
+    pcs.purchase_users_with_recorded_cart,
+    pcs.purchase_users_without_recorded_cart,
     ROUND(COUNT(fc.user_id) * 100.0 / NULLIF(COUNT(fv.user_id), 0), 2) AS sequential_view_to_cart,
     ROUND(COUNT(fpc.user_id) * 100.0 / NULLIF(COUNT(fc.user_id), 0), 2) AS sequential_cart_to_purchase,
     ROUND(COUNT(fpv.user_id) * 100.0 / NULLIF(COUNT(fv.user_id), 0), 2) AS sequential_view_to_purchase,
     ROUND(COUNT(fpc.user_id) * 100.0 / NULLIF(COUNT(fv.user_id), 0), 2) AS strict_full_funnel_conversion
 FROM first_view fv
+CROSS JOIN purchase_cart_summary pcs
 LEFT JOIN first_cart_after_view fc
     ON fv.user_id = fc.user_id
 LEFT JOIN first_purchase_after_view fpv
     ON fv.user_id = fpv.user_id
 LEFT JOIN first_purchase_after_cart fpc
-    ON fv.user_id = fpc.user_id;
+    ON fv.user_id = fpc.user_id
+GROUP BY
+    pcs.purchase_users_with_recorded_cart,
+    pcs.purchase_users_without_recorded_cart;
 
 DROP TABLE IF EXISTS funnel_user_stages;
 

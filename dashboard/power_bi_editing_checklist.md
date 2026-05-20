@@ -15,6 +15,8 @@ Expected checked values:
 * View users: `3,022,130`
 * Cart after view users: `336,812`
 * Strict View -> Cart -> Purchase users: `196,505`
+* Purchase users with recorded cart: `202,777`
+* Purchase users without recorded cart: `144,341`
 * Sequential View -> Cart: `11.14%`
 * Sequential Cart -> Purchase: `58.34%`
 * Strict full funnel conversion: `6.50%`
