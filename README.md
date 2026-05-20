@@ -78,6 +78,8 @@ Key insight:
 
 Purchase users slightly exceeded cart users, which suggests either direct checkout behavior or incomplete cart event tracking.
 
+Cart -> Purchase conversion is calculated as users who had both cart and purchase events divided by users who had cart events.
+
 ### 3. Retention & Cohorts
 
 This page analyzes whether users return after their first visit.

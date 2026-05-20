@@ -151,8 +151,13 @@ SELECT
     SUM(has_view) AS viewed_users,
     SUM(has_cart) AS cart_users,
     SUM(has_purchase) AS purchase_users,
+    SUM(CASE WHEN has_cart = 1 AND has_purchase = 1 THEN 1 ELSE 0 END) AS cart_and_purchase_users,
     SUM(CASE WHEN has_purchase = 1 AND has_cart = 0 THEN 1 ELSE 0 END) AS purchase_without_cart_users,
     ROUND(SUM(has_cart) * 100.0 / NULLIF(SUM(has_view), 0), 2) AS view_to_cart_conversion,
-    ROUND(SUM(has_purchase) * 100.0 / NULLIF(SUM(has_cart), 0), 2) AS cart_to_purchase_conversion,
+    ROUND(
+        SUM(CASE WHEN has_cart = 1 AND has_purchase = 1 THEN 1 ELSE 0 END) * 100.0
+        / NULLIF(SUM(has_cart), 0),
+        2
+    ) AS cart_to_purchase_conversion,
     ROUND(SUM(has_purchase) * 100.0 / NULLIF(SUM(has_view), 0), 2) AS view_to_purchase_conversion
 FROM user_flags;
