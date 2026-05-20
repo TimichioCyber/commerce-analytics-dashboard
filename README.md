@@ -134,7 +134,7 @@ Repeat buyers account for a disproportionately large share of revenue compared w
 
 * Product views represent the majority of user activity.
 * Only around 11% of users who viewed products added products to cart.
-* Purchase conversion is slightly higher than cart conversion, which may indicate direct checkout behavior or missing cart tracking.
+* A large share of purchasing users had no recorded cart event, which may indicate direct checkout behavior or incomplete cart tracking.
 * Sequential funnel analysis confirms that the cart step is the main tracking or behavioral gap.
 * Day-1 retention is relatively low, showing that many users do not return after their first visit.
 * Earlier cohorts showed stronger retention than later cohorts.

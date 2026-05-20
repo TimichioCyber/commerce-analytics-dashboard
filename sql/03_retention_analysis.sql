@@ -25,7 +25,7 @@ SELECT
 FROM first_visit fv
 LEFT JOIN user_activity ua
     ON fv.user_id = ua.user_id
-   AND ua.activity_date = fv.first_visit_date + INTERVAL '1 day';
+   AND ua.activity_date = fv.first_visit_date + 1;
 
 -- Cohort retention table by first visit date and day number.
 WITH first_visit AS (

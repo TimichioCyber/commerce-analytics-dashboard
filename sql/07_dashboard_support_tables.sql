@@ -59,8 +59,13 @@ purchase_cart_flags AS (
 ),
 purchase_cart_summary AS (
     SELECT
-        SUM(CASE WHEN has_purchase = 1 AND has_cart = 1 THEN 1 ELSE 0 END) AS purchase_users_with_recorded_cart,
-        SUM(CASE WHEN has_purchase = 1 AND has_cart = 0 THEN 1 ELSE 0 END) AS purchase_users_without_recorded_cart
+        SUM(CASE WHEN has_purchase = 1 AND has_cart = 1 THEN 1 ELSE 0 END) AS all_purchase_users_with_recorded_cart,
+        SUM(CASE WHEN has_purchase = 1 AND has_cart = 0 THEN 1 ELSE 0 END) AS all_purchase_users_without_recorded_cart,
+        ROUND(
+            SUM(CASE WHEN has_purchase = 1 AND has_cart = 0 THEN 1 ELSE 0 END) * 100.0
+            / NULLIF(SUM(CASE WHEN has_purchase = 1 THEN 1 ELSE 0 END), 0),
+            2
+        ) AS all_purchase_users_without_cart_share
     FROM purchase_cart_flags
 )
 SELECT
@@ -69,23 +74,20 @@ SELECT
     COUNT(fpv.user_id) AS purchase_after_view_users,
     COUNT(fpc.user_id) AS strict_view_cart_purchase_users,
     COUNT(fpv.user_id) - COUNT(fpc.user_id) AS purchase_after_view_not_in_strict_funnel_users,
-    pcs.purchase_users_with_recorded_cart,
-    pcs.purchase_users_without_recorded_cart,
+    (SELECT all_purchase_users_with_recorded_cart FROM purchase_cart_summary) AS all_purchase_users_with_recorded_cart,
+    (SELECT all_purchase_users_without_recorded_cart FROM purchase_cart_summary) AS all_purchase_users_without_recorded_cart,
+    (SELECT all_purchase_users_without_cart_share FROM purchase_cart_summary) AS all_purchase_users_without_cart_share,
     ROUND(COUNT(fc.user_id) * 100.0 / NULLIF(COUNT(fv.user_id), 0), 2) AS sequential_view_to_cart,
     ROUND(COUNT(fpc.user_id) * 100.0 / NULLIF(COUNT(fc.user_id), 0), 2) AS sequential_cart_to_purchase,
     ROUND(COUNT(fpv.user_id) * 100.0 / NULLIF(COUNT(fv.user_id), 0), 2) AS sequential_view_to_purchase,
     ROUND(COUNT(fpc.user_id) * 100.0 / NULLIF(COUNT(fv.user_id), 0), 2) AS strict_full_funnel_conversion
 FROM first_view fv
-CROSS JOIN purchase_cart_summary pcs
 LEFT JOIN first_cart_after_view fc
     ON fv.user_id = fc.user_id
 LEFT JOIN first_purchase_after_view fpv
     ON fv.user_id = fpv.user_id
 LEFT JOIN first_purchase_after_cart fpc
-    ON fv.user_id = fpc.user_id
-GROUP BY
-    pcs.purchase_users_with_recorded_cart,
-    pcs.purchase_users_without_recorded_cart;
+    ON fv.user_id = fpc.user_id;
 
 DROP TABLE IF EXISTS funnel_user_stages;
 
@@ -134,29 +136,19 @@ ranked AS (
         purchase_events,
         total_revenue,
         avg_purchase_value,
-        ROW_NUMBER() OVER (ORDER BY total_revenue DESC) AS revenue_rank
+        ROW_NUMBER() OVER (ORDER BY total_revenue DESC) AS revenue_rank,
+        SUM(total_revenue) OVER () AS all_category_revenue
     FROM category_revenue
 )
 SELECT
-    CASE
-        WHEN revenue_rank <= 10 OR category_clean = 'Unknown' THEN category_clean
-        ELSE 'Other'
-    END AS category_group,
-    MIN(
-        CASE
-            WHEN revenue_rank <= 10 OR category_clean = 'Unknown' THEN revenue_rank
-            ELSE 999
-        END
-    ) AS category_sort_order,
-    SUM(purchase_events) AS purchase_events,
-    ROUND(SUM(total_revenue), 2) AS total_revenue,
-    ROUND(SUM(total_revenue) * 100.0 / SUM(SUM(total_revenue)) OVER (), 2) AS revenue_share_percent
+    category_clean AS category_group,
+    revenue_rank AS category_sort_order,
+    purchase_events,
+    total_revenue,
+    avg_purchase_value,
+    ROUND(total_revenue * 100.0 / NULLIF(all_category_revenue, 0), 2) AS revenue_share_percent
 FROM ranked
-GROUP BY
-    CASE
-        WHEN revenue_rank <= 10 OR category_clean = 'Unknown' THEN category_clean
-        ELSE 'Other'
-    END
+WHERE revenue_rank <= 10
 ORDER BY category_sort_order;
 
 -- =====================================================

@@ -15,8 +15,9 @@ Expected checked values:
 * View users: `3,022,130`
 * Cart after view users: `336,812`
 * Strict View -> Cart -> Purchase users: `196,505`
-* Purchase users with recorded cart: `202,777`
-* Purchase users without recorded cart: `144,341`
+* All purchase users with recorded cart: `202,777`
+* All purchase users without recorded cart: `144,341`
+* All purchase users without recorded cart share: `41.59%`
 * Sequential View -> Cart: `11.14%`
 * Sequential Cart -> Purchase: `58.34%`
 * Strict full funnel conversion: `6.50%`
@@ -25,7 +26,8 @@ Expected checked values:
 
 * Use `category_revenue_summary` for the category revenue chart.
 * Sort categories by `category_sort_order`.
-* Show `Unknown` explicitly because it represents material revenue.
+* Show Top 10 categories by revenue.
+* Show `Unknown` explicitly because it ranks second by revenue.
 
 Expected checked values:
 
