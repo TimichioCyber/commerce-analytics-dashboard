@@ -1,9 +1,3 @@
--- Funnel analysis from product view to cart to purchase.
--- This script separates:
--- 1) strict sequential funnel metrics;
--- 2) cart tracking gap among purchasing users.
-
--- Strict sequential user-level funnel.
 WITH first_view AS (
     SELECT
         user_id,
@@ -62,9 +56,6 @@ LEFT JOIN first_purchase_after_view fpv
 LEFT JOIN first_purchase_after_cart fpc
     ON fv.user_id = fpc.user_id;
 
--- Cart tracking gap among purchasing users.
--- This is separate from the strict funnel because it describes all purchasing users,
--- not only users who completed each ordered funnel step.
 WITH user_flags AS (
     SELECT
         user_id,

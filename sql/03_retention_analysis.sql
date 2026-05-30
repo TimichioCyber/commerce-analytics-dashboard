@@ -1,6 +1,3 @@
--- Retention and cohort analysis.
-
--- Day-1 retention after a user's first visit.
 WITH first_visit AS (
     SELECT
         user_id,
@@ -27,7 +24,6 @@ LEFT JOIN user_activity ua
     ON fv.user_id = ua.user_id
    AND ua.activity_date = fv.first_visit_date + 1;
 
--- Cohort retention table by first visit date and day number.
 WITH first_visit AS (
     SELECT
         user_id,
@@ -63,7 +59,6 @@ ORDER BY
     cohort_date,
     day_number;
 
--- Cohort retention percentage table.
 WITH first_visit AS (
     SELECT
         user_id,
@@ -115,7 +110,6 @@ ORDER BY
     cohort_date,
     rt.day_number;
 
--- BI-ready table for Power BI cohort visuals.
 DROP TABLE IF EXISTS retention_cohorts;
 
 CREATE TABLE retention_cohorts AS

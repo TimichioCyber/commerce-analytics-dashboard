@@ -1,10 +1,3 @@
--- BI-ready support tables for the Power BI dashboard.
--- Run this script after sql/04_user_segmentation.sql.
-
--- =====================================================
--- 01. Sequential user-level funnel
--- =====================================================
-
 DROP TABLE IF EXISTS funnel_user_summary;
 
 CREATE TABLE funnel_user_summary AS
@@ -113,10 +106,6 @@ SELECT
     strict_full_funnel_conversion AS conversion_from_view_percent
 FROM funnel_user_summary;
 
--- =====================================================
--- 02. Category revenue summary
--- =====================================================
-
 DROP TABLE IF EXISTS category_revenue_summary;
 
 CREATE TABLE category_revenue_summary AS
@@ -150,10 +139,6 @@ SELECT
 FROM ranked
 WHERE revenue_rank <= 10
 ORDER BY category_sort_order;
-
--- =====================================================
--- 03. User segment revenue summary
--- =====================================================
 
 DROP TABLE IF EXISTS user_segment_summary;
 

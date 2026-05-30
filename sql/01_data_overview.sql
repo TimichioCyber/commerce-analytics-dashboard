@@ -1,6 +1,3 @@
--- General data overview and executive-level revenue metrics.
-
--- Event distribution by event type.
 SELECT
     event_type,
     COUNT(*) AS events_count,
@@ -9,7 +6,6 @@ FROM ecommerce_events
 GROUP BY event_type
 ORDER BY events_count DESC;
 
--- Unique users by event type.
 SELECT
     event_type,
     COUNT(DISTINCT user_id) AS unique_users
@@ -17,7 +13,6 @@ FROM ecommerce_events
 GROUP BY event_type
 ORDER BY unique_users DESC;
 
--- High-level KPI summary.
 SELECT
     COUNT(*) AS total_events,
     COUNT(DISTINCT user_id) AS total_users,
@@ -30,7 +25,6 @@ SELECT
     ) AS purchase_user_conversion
 FROM ecommerce_events;
 
--- Daily revenue trend.
 SELECT
     DATE(event_time) AS event_date,
     COUNT(*) AS purchase_events,
@@ -41,7 +35,6 @@ WHERE event_type = 'purchase'
 GROUP BY event_date
 ORDER BY event_date;
 
--- Revenue by weekday.
 SELECT
     EXTRACT(DOW FROM event_time) AS weekday_number,
     TRIM(TO_CHAR(event_time, 'Day')) AS weekday_name,
@@ -54,7 +47,6 @@ GROUP BY
     weekday_name
 ORDER BY weekday_number;
 
--- Top revenue-driving product categories.
 SELECT
     COALESCE(NULLIF(TRIM(category_code), ''), 'Unknown') AS category_code,
     COUNT(*) AS purchase_events,

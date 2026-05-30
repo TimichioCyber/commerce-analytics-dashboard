@@ -1,6 +1,3 @@
--- Revenue concentration and user purchase segmentation.
-
--- Purchase segments by number of purchases.
 WITH user_purchases AS (
     SELECT
         user_id,
@@ -24,7 +21,6 @@ FROM user_purchases
 GROUP BY user_segment
 ORDER BY segment_revenue DESC;
 
--- Top spending users.
 SELECT
     user_id,
     COUNT(*) AS purchase_count,
@@ -37,7 +33,6 @@ GROUP BY user_id
 ORDER BY total_spent DESC
 LIMIT 20;
 
--- Revenue by product category.
 SELECT
     COALESCE(NULLIF(TRIM(category_code), ''), 'Unknown') AS category_code,
     COUNT(*) AS purchase_events,
@@ -49,7 +44,6 @@ GROUP BY COALESCE(NULLIF(TRIM(category_code), ''), 'Unknown')
 ORDER BY total_revenue DESC
 LIMIT 20;
 
--- BI-ready table for Power BI user segmentation visuals.
 DROP TABLE IF EXISTS user_purchase_segments;
 
 CREATE TABLE user_purchase_segments AS

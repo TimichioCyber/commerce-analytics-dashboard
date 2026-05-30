@@ -1,127 +1,134 @@
-# E-Commerce User Behavior & Revenue Analysis
+# E-Commerce Analytics Dashboard
 
 ## Project Overview
 
-This project analyzes user behavior and revenue performance in an e-commerce platform using PostgreSQL and Power BI.
+This project analyzes October 2019 user behavior and revenue performance for a multi-category e-commerce store. The goal is to turn raw event-level data into a business-ready Power BI dashboard supported by PostgreSQL transformations.
 
-The goal of the project is to answer practical business questions:
+The analysis focuses on four areas:
 
-* How do users move through the purchase funnel?
-* Where do users drop off before buying?
-* Do users return after their first visit?
-* Which product categories generate the most revenue?
-* How valuable are repeat buyers compared to one-time buyers?
+* Executive revenue and user performance
+* Sequential purchase funnel behavior
+* User retention by acquisition cohort
+* Purchase-frequency customer segmentation
 
-The project combines SQL-based data preparation, cohort analysis, funnel analysis, revenue analysis, customer segmentation, and Power BI dashboarding.
+## Live Dashboard
 
----
+[Open the interactive Power BI dashboard](https://app.powerbi.com/view?r=eyJrIjoiZjE2ZWI1NmEtMDIyYS00YTJlLTk1NjAtZGM4NTI1YTYyNTU2IiwidCI6IjUwOTlmMzI1LWRmYzYtNGJmZS05Y2IzLTgwMDZlYjE4NzM3NiJ9&pageName=791c3245f8f7e176c7d5)
+
+## Dashboard Preview
+
+### Executive Overview
+
+![Executive Overview](screenshots/overview.jpg)
+
+### Funnel Analysis
+
+![Funnel Analysis](screenshots/funnel.jpg)
+
+### Retention Analysis
+
+![Retention Analysis](screenshots/retention.jpg)
+
+### Segments
+
+![Segments](screenshots/segments.jpg)
 
 ## Dataset
 
-The analysis is based on the open Kaggle dataset [Ecommerce behavior data from multi category store](https://www.kaggle.com/datasets/mkechinov/ecommerce-behavior-data-from-multi-category-store/data).
+Source: [Ecommerce behavior data from multi category store](https://www.kaggle.com/datasets/mkechinov/ecommerce-behavior-data-from-multi-category-store/data)
 
-This project uses user event data from October 2019. Each row represents one user event.
-
-Main fields:
+This project uses the October 2019 event file. Each row is one user event.
 
 | Column | Description |
 | --- | --- |
-| `event_time` | Timestamp of the user event |
-| `event_type` | Type of event: view, cart, purchase |
+| `event_time` | Event timestamp |
+| `event_type` | Event type: `view`, `cart`, `purchase` |
 | `product_id` | Product identifier |
-| `category_code` | Product category |
+| `category_id` | Product category identifier |
+| `category_code` | Product category path |
 | `brand` | Product brand |
-| `price` | Product price |
+| `price` | Event price |
 | `user_id` | User identifier |
 | `user_session` | Session identifier |
 
----
-
-## Tools Used
+## Tools
 
 * PostgreSQL
 * Power BI
-* SQL
 * DAX
-
----
+* Deneb custom visuals
 
 ## Dashboard Pages
 
 ### Executive Overview
 
-High-level platform performance: revenue, users, purchase conversion, revenue trend, weekday revenue, and revenue by product category.
+High-level performance view with total revenue, total users, buyers, conversion rate, revenue momentum, category filters, brand filters, and key business insights.
 
 ### Funnel Analysis
 
-User movement through the purchase journey:
+Sequential user-level funnel from product view to cart to purchase. The page highlights the largest drop-off point and separates strict funnel conversion from the cart tracking gap.
 
-View -> Cart -> Purchase
+### Retention Analysis
 
-Key insight:
+Weekly cohort retention with key retention days and a retention decay chart. The analysis uses eligible cohorts only, so later October cohorts are not compared on retention days that cannot be observed inside the dataset window.
 
-The cart step shows a tracking gap: almost all purchasing users had a prior product view, but many purchasing users did not have a recorded cart event.
+### Segments
 
-The final dashboard uses a sequential user-level funnel. In this approach, users must move through the observed order View -> Cart -> Purchase. This avoids mixing user-level and event-level conversion metrics.
+Purchase-frequency segmentation comparing one-time buyers and repeat buyers. The page shows repeat buyer contribution, revenue share by purchase frequency, top revenue segment, category hierarchy filtering, and brand filtering.
 
-### Retention & Cohorts
+## Key Metrics
 
-Retention heatmap and Day-N cohort analysis.
+| Metric | Value |
+| --- | ---: |
+| Total revenue | 229.96M |
+| Total users | 3.02M |
+| Purchase users | 347K |
+| View-to-purchase conversion | 11.49% |
+| View-to-cart conversion | 11.14% |
+| Cart-to-purchase conversion | 56.02% |
+| D1 retention | 10.67% |
+| D7 retention | 6.38% |
+| D14 retention | 6.22% |
+| Repeat buyer rate | 37.86% |
+| Repeat revenue | 172.90M |
 
-Later cohorts have fewer observable days in the October dataset, so earlier and later cohorts should be compared with that limitation in mind.
+## Key Insights
 
-### Revenue & User Segmentation
+* Product views dominate event activity, while only about 11% of viewing users add products to cart.
+* The main funnel issue is the view-to-cart step.
+* A large number of purchasing users have no recorded cart event, which indicates either direct checkout behavior or incomplete cart tracking.
+* Retention is strongest in the first few days after the initial visit and declines quickly after D1.
+* Repeat buyers generate most of total revenue despite one-time buyers being the largest customer group.
+* The `2-5 Purchases` segment is the strongest revenue segment.
+* Missing category values are kept as `Unknown` because they materially contribute to revenue.
 
-Purchase frequency segments, high-value users, and revenue share by buyer segment.
+## SQL Workflow
 
----
+Run the scripts in order:
 
-## Key SQL Techniques Used
-
-* Data aggregation
-* Conditional aggregation
-* Common Table Expressions
-* Cohort analysis
-* Retention calculation
-* User segmentation
-* Revenue analysis
-* Data cleaning
-* BI-ready table creation
-* Data validation
-
----
-
-## Key Business Insights
-
-* Product views represent the majority of user activity.
-* Only around 11% of users who viewed products added products to cart.
-* A large share of purchasing users had no recorded cart event, which may indicate direct checkout behavior or incomplete cart tracking.
-* Sequential funnel analysis confirms that the cart step is the main tracking or behavioral gap.
-* Day-1 retention is relatively low, showing that many users do not return after their first visit.
-* Earlier cohorts showed stronger retention than later cohorts.
-* Smartphones were the strongest revenue-driving category.
-* `Unknown` was the second-highest revenue category and represented 9.97% of purchase revenue.
-* Most customers purchased only once.
-* Repeat buyers and high-value users contribute disproportionately to revenue.
-
----
-
-## Data Quality Decision
-
-Some product category values were missing in the original dataset.
-
-Decision: missing product categories are kept in the analysis and standardized as `Unknown` in both SQL and Power BI.
-
-In the loaded October 2019 data, missing categories represented 173,425 purchase events and 22.9M in revenue, making `Unknown` the second-highest revenue category. Removing these rows would materially understate total revenue and change the category ranking.
-
-This is treated as a data quality limitation rather than a reason to exclude the records. The approach keeps financial totals complete while making the missing category issue visible to dashboard users.
-
----
+| Script | Purpose |
+| --- | --- |
+| `00_create_table.sql` | Creates the raw event table and base indexes |
+| `01_data_overview.sql` | Event, revenue, user, weekday, and category overview |
+| `02_funnel_analysis.sql` | Sequential funnel and cart tracking gap checks |
+| `03_retention_analysis.sql` | Cohort retention base table |
+| `04_user_segmentation.sql` | Purchase-frequency user segmentation |
+| `05_data_quality_checks.sql` | Missing category and price checks |
+| `06_dashboard_support_tables.sql` | Core Power BI support tables |
+| `07_funnel_filter_support.sql` | Filter-ready funnel table by user/category/brand path |
+| `08_retention_dashboard_support.sql` | Weekly and daily retention tables for Power BI |
+| `09_segments.sql` | Filter-ready segment purchase table |
 
 ## Project Structure
 
 ```text
-commerce-analytics-dashboard/
+ecommerce-analytics-dashboard/
+|-- dashboard/
+|   |-- assets/
+|   |   |-- icons/
+|   |   |-- light_premium_gradient.png
+|
+|-- screenshots/
 |
 |-- sql/
 |   |-- 00_create_table.sql
@@ -131,25 +138,24 @@ commerce-analytics-dashboard/
 |   |-- 04_user_segmentation.sql
 |   |-- 05_data_quality_checks.sql
 |   |-- 06_dashboard_support_tables.sql
+|   |-- 07_funnel_filter_support.sql
+|   |-- 08_retention_dashboard_support.sql
+|   |-- 09_segments.sql
 |
+|-- .gitignore
 |-- README.md
 ```
 
-The Power BI `.pbix` file is kept locally and is not tracked in this public repository because the exported file is large.
+Power BI `.pbix` files and raw CSV exports are not tracked in this public repository.
 
----
+## How to Reproduce
 
-## How to Use This Project
-
-1. Download the dataset from Kaggle.
-2. Load the October 2019 e-commerce CSV dataset into PostgreSQL.
-3. Run the SQL scripts from the `sql/` folder in order.
-4. Open the local Power BI dashboard file.
-5. Refresh the Power BI model and use the dashboard support tables for the final visuals.
-6. Review the dashboard pages and business insights.
-
----
+1. Download the October 2019 dataset from Kaggle.
+2. Load the CSV into PostgreSQL table `ecommerce_events`.
+3. Run SQL scripts from `sql/` in numeric order.
+4. Refresh the Power BI model.
+5. Connect visuals to the prepared dashboard support tables.
 
 ## Author
 
-Created as a data analytics portfolio project focused on SQL, Power BI, product analytics, and business intelligence.
+Created as a data analytics and business intelligence portfolio project.

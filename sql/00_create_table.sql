@@ -1,7 +1,3 @@
--- Create the raw events table used throughout the analysis.
--- Load the October 2019 e-commerce events CSV into this table before running
--- the analytical scripts.
-
 CREATE TABLE IF NOT EXISTS ecommerce_events (
     event_time TIMESTAMP,
     event_type TEXT,

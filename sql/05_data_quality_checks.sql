@@ -1,6 +1,3 @@
--- Data quality checks used to validate missing product category handling.
-
--- Check whether missing categories are stored as SQL NULL values or blank strings.
 SELECT
     CASE
         WHEN category_code IS NULL THEN 'NULL'
@@ -14,7 +11,6 @@ FROM ecommerce_events
 GROUP BY category_status
 ORDER BY purchase_revenue DESC NULLS LAST;
 
--- Revenue by category after standardizing missing values as "Unknown".
 SELECT
     COALESCE(NULLIF(TRIM(category_code), ''), 'Unknown') AS category_clean,
     COUNT(*) AS purchase_events,
